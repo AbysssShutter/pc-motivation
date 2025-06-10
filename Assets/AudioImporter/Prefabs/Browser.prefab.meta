@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: 8c4ec9e65d4961640ad6dd301faacfb5
+timeCreated: 1554027574
+licenseType: Store
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 146746
+  packageName: AudioImporter
+  packageVersion: 3.3
+  assetPath: Assets/AudioImporter/Prefabs/Browser.prefab
+  uploadId: 664820

@@ -1,0 +1,28 @@
+{
+  "name": "com.srejonkhan.another-file-browser",
+  "version": "0.5.0",
+  "displayName": "Another File Browser",
+  "description": "Just another File Dialog for Unity, with easy implementation.",
+  "unity": "2018.3",
+  "keywords": [
+    "file browser",
+    "file picker",
+    "file explorer",
+    "file dialog",
+    "ookii dialogs"
+  ],
+  "author": {
+    "name": "Srejon Khan",
+    "email": "srejonkhan9@gmail.com",
+    "url": "https://srejonkhan.github.io/"
+  },
+  "type": "library",
+  "samples": [
+    {
+      "displayName": "Samples",
+      "description": "A simple example of how to use Another File Browser.",
+      "path": "Samples~/AnotherFileBrowser"
+    }
+  ],
+  "_fingerprint": "9a5882dde46d6df5aae5a5459d4da3e4b386b9a5"
+}

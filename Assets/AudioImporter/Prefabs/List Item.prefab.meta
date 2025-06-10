@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: bea7459a31ded2a4fbc0608482fdb806
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 146746
+  packageName: AudioImporter
+  packageVersion: 3.3
+  assetPath: Assets/AudioImporter/Prefabs/List Item.prefab
+  uploadId: 664820

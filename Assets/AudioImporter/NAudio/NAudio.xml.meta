@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: f4a946c5cb9933446ac7eb948f309dee
+TextScriptImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 146746
+  packageName: AudioImporter
+  packageVersion: 3.3
+  assetPath: Assets/AudioImporter/NAudio/NAudio.xml
+  uploadId: 664820

@@ -1,0 +1,105 @@
+<linker>
+	<assembly fullname="Assembly-CSharp" ignoreIfMissing="1">
+		<type fullname="BasicNoteScript">
+			<method name="NoteHit"/>
+			<method name="NoteHit"/>
+			<method name="NoteHit"/>
+		</type>
+		<type fullname="EditorUIController">
+			<method name="BackToMainScreen"/>
+			<method name="EnableDisableAddMenu"/>
+			<method name="EnableDisableBorders"/>
+			<method name="EnableDisableMesh"/>
+			<method name="LevelNameUpdated"/>
+			<method name="OpenClosePauseMenu"/>
+			<method name="OpenClosePauseMenu"/>
+			<method name="SelectLevelBackground"/>
+		</type>
+		<type fullname="LevelDataDisplay">
+			<method name="DeleteLevel"/>
+			<method name="DeleteLevel"/>
+			<method name="EditLevel"/>
+			<method name="EditLevel"/>
+			<method name="PlayLevel"/>
+			<method name="PlayLevel"/>
+		</type>
+		<type fullname="LevelsDataManager">
+			<method name="CheckNewLevelParams"/>
+			<method name="CheckNewLevelParams"/>
+			<method name="ConfirmNewLevel"/>
+			<method name="CreateNewLevel"/>
+			<method name="SetTrackText"/>
+		</type>
+		<type fullname="MusicController">
+			<method name="PausePlayModeOnUIInteraction"/>
+			<method name="StartOrPausePlayMode"/>
+		</type>
+		<type fullname="MusicPlayer">
+			<method name="OpenClosePlaylist"/>
+			<method name="PlayPauseTrack"/>
+			<method name="SetMusicVolume"/>
+			<method name="SetNextTrack"/>
+			<method name="SetPrevTrack"/>
+		</type>
+		<type fullname="PlayUIController">
+			<method name="BackToMainScreen"/>
+			<method name="OpenClosePauseMenu"/>
+			<method name="OpenClosePauseMenu"/>
+		</type>
+		<type fullname="ScrollZoom">
+			<method name="DragSlider"/>
+		</type>
+		<type fullname="SettingsScreen">
+			<method name="ShowOrClose"/>
+		</type>
+		<type fullname="TrackScript">
+			<method name="SetTrackAsPlaying"/>
+			<method name="SetTrackAsPlaying"/>
+		</type>
+	</assembly>
+	<assembly fullname="Unity.RenderPipelines.Core.Runtime" ignoreIfMissing="1">
+		<type fullname="UnityEngine.Rendering.UI.DebugUIHandlerButton">
+			<method name="OnAction"/>
+		</type>
+		<type fullname="UnityEngine.Rendering.UI.DebugUIHandlerIntField">
+			<method name="OnDecrement"/>
+			<method name="OnDecrement"/>
+			<method name="OnIncrement"/>
+			<method name="OnIncrement"/>
+		</type>
+		<type fullname="UnityEngine.Rendering.UI.DebugUIHandlerObjectPopupField">
+			<method name="OnDecrement"/>
+			<method name="OnIncrement"/>
+		</type>
+		<type fullname="UnityEngine.Rendering.UI.DebugUIHandlerPanel">
+			<method name="OnScrollbarClicked"/>
+			<method name="OnScrollbarClicked"/>
+			<method name="ResetDebugManager"/>
+		</type>
+		<type fullname="UnityEngine.Rendering.UI.DebugUIHandlerUIntField">
+			<method name="OnDecrement"/>
+			<method name="OnDecrement"/>
+			<method name="OnIncrement"/>
+			<method name="OnIncrement"/>
+		</type>
+	</assembly>
+	<assembly fullname="UnityEngine.CoreModule" ignoreIfMissing="1">
+		<type fullname="UnityEngine.GameObject">
+			<method name="SetActive"/>
+			<method name="SetActive"/>
+			<method name="SetActive"/>
+			<method name="SetActive"/>
+			<method name="SetActive"/>
+			<method name="SetActive"/>
+			<method name="SetActive"/>
+			<method name="SetActive"/>
+			<method name="SetActive"/>
+			<method name="SetActive"/>
+			<method name="SetActive"/>
+			<method name="SetActive"/>
+			<method name="SetActive"/>
+			<method name="SetActive"/>
+			<method name="SetActive"/>
+		</type>
+	</assembly>
+</linker>

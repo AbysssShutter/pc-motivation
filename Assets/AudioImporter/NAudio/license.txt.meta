@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: 637355c9eabd2b94884771901fa2c442
+TextScriptImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 146746
+  packageName: AudioImporter
+  packageVersion: 3.3
+  assetPath: Assets/AudioImporter/NAudio/license.txt
+  uploadId: 664820
