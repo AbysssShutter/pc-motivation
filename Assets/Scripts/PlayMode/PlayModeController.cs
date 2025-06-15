@@ -3,27 +3,44 @@ using UnityEngine;
 public class PlayModeController : MonoBehaviour
 {
     private const float NOTEANIMDURATION = 1.5f;
-    [SerializeField] private Canvas levelCanvas;
+    private float BPM;
+    [SerializeField] private GameObject elemsContainer;
+    [SerializeField] private GameObject lineDraw;
     [SerializeField] private GameObject basicNotePrefab;
-    PlayMusicController playMusicController;
-    
+    [SerializeField] private GameObject triolNotePrefab;
+    [SerializeField] private GameObject duolNotePrefab;
 
-    void Start()
+    public void SetLevelBPM(float bpm)
     {
-        playMusicController = FindFirstObjectByType<PlayMusicController>();
+        BPM = bpm;
     }
 
-    public void SpawnNoteInPlayMode(Vector2 spawnPos, string type, float fadeTime) {
+    public void SpawnNoteInPlayMode(Vector2 spawnPos, string type, float fadeTime)
+    {
         GameObject newNote = Instantiate(GetObjectByType(type), spawnPos, Quaternion.identity);
         newNote.GetComponent<BasicNoteScript>().SetFadeTimeForPlayMode(NOTEANIMDURATION / fadeTime);
+        newNote.GetComponent<BasicNoteScript>().SetBPM(BPM);
         newNote.GetComponent<BasicNoteScript>().RotateSelf();
-        newNote.transform.SetParent(levelCanvas.transform, false);   
+        newNote.transform.SetParent(elemsContainer.transform, false);
     }
 
-    private GameObject GetObjectByType(string type) {
-        switch(type) {
+    public void DrawLineFromOneNoteToOther(SirVector start, SirVector end, float duration)
+    {
+        GameObject line = Instantiate(lineDraw, new Vector2(0, 0), Quaternion.identity);
+        line.transform.SetParent(elemsContainer.transform, false);
+        StartCoroutine(line.GetComponent<LineDrawer>().DrawFromTo(start, end, duration));
+    }
+
+    private GameObject GetObjectByType(string type)
+    {
+        switch (type)
+        {
             case "BASIC":
                 return basicNotePrefab;
+            case "TRIOL":
+                return triolNotePrefab;
+            case "DUOL":
+                return duolNotePrefab;
         }
         return null;
     }

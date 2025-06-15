@@ -1,10 +1,9 @@
 using UnityEngine;
 using TMPro;
-using System.Collections.Generic;
+using System.Collections;
 using UnityEngine.UI;
 using AnotherFileBrowser.Windows;
-using System;
-using System.Threading.Tasks;
+using DG.Tweening;
 
 public class LevelsDataManager : MonoBehaviour
 {
@@ -13,7 +12,6 @@ public class LevelsDataManager : MonoBehaviour
     public AudioImporter importer;
 
     //Объекты экрана добавления уровня
-    [SerializeField] private Animator newLevelScreenAnimator;
     [SerializeField] private GameObject newLevelPanel;
     [SerializeField] private TMP_InputField newLevelName;
     [SerializeField] private TMP_InputField newLevelBPM;
@@ -21,6 +19,19 @@ public class LevelsDataManager : MonoBehaviour
     [SerializeField] private GameObject errorAnnouncement;
     [SerializeField] private Button newLevelTrackSelect;
     [SerializeField] private Button confirmNewLevel;
+
+    [SerializeField] private TMP_Text summaryScore;
+    [SerializeField] private TMP_Text missed;
+    [SerializeField] private TMP_Text perfect;
+    [SerializeField] private TMP_Text got;
+    [SerializeField] private TMP_Text meh;
+    [SerializeField] private TMP_Text totalNotes;
+    [SerializeField] private TMP_Text pressedNotes;
+    [SerializeField] private Image appBg;
+    private Tween tween;
+    private Tween panelTween;
+    private Tween errorTween;
+    private bool isPanelOpened = false;
     void OnEnable()
     {
         RefreshLevelsList();
@@ -32,7 +43,8 @@ public class LevelsDataManager : MonoBehaviour
         {
             if (SaveLoadInfo.DoesThisLevelNameExist(newLevelName.text))
             {
-                //Добавить анимацию
+                ConfirmButtonAction(false);
+                StartCoroutine(ShowNameError());
             }
             else
             {
@@ -40,14 +52,13 @@ public class LevelsDataManager : MonoBehaviour
                     && newLevelTrackPath.text.Length > 0
                     && newLevelTrackPath.text != "Song Path...")
                 {
-                    confirmNewLevel.interactable = true;
+                    ConfirmButtonAction(true);
                 }
             }
         }
         else
         {
-            //Добавить активацию анимации
-            confirmNewLevel.interactable = false;
+            ConfirmButtonAction(false);
         }
     }
 
@@ -58,14 +69,13 @@ public class LevelsDataManager : MonoBehaviour
         newLevel.levelBpm = int.Parse(newLevelBPM.text);
         newLevel.trackPath = newLevelTrackPath.text;
         newLevel.waveformPath = SaveLoadInfo.GenerateAndSaveWaveform(newLevel.levelName, newLevel.trackPath);
-        
+
         SaveLoadInfo.SaveLevelInfo(newLevel);
 
         newLevelName.text = "";
         newLevelBPM.text = "";
         newLevelTrackPath.text = "Song Path...";
-        //Добавить активацию анимации
-        confirmNewLevel.interactable = false;
+        ConfirmButtonAction(false);
         OpenCloseNewLevelTab();
 
         FindFirstObjectByType<MusicPlayer>().RefreshTrackList();
@@ -90,39 +100,165 @@ public class LevelsDataManager : MonoBehaviour
         newLevelName.text = "";
         newLevelBPM.text = "";
         newLevelTrackPath.text = "Song Path...";
-        confirmNewLevel.interactable = false;
+        ConfirmButtonAction(false);
         OpenCloseNewLevelTab();
     }
 
     public void RefreshLevelsList()
     {
+        FindFirstObjectByType<MusicPlayer>().RefreshTrackList();
         foreach (Transform child in dataContainer.transform)
         {
             Destroy(child.gameObject);
         }
-        List<LevelInfo> levelInfo = SaveLoadInfo.GetAllLevelsHighData();
+        System.Collections.Generic.List<LevelInfo> levelInfo = SaveLoadInfo.GetAllLevelsHighData();
         if (levelInfo != null)
         {
             foreach (LevelInfo level in levelInfo)
             {
                 GameObject newLevelTemplate = Instantiate(levelDataTemplate);
-                newLevelTemplate.GetComponent<LevelDataDisplay>().SetLevelDisplayData(level.levelName, level.levelBpm, level.isPlayable);
+                newLevelTemplate.GetComponent<LevelDataDisplay>().SetLevelDisplayData(
+                    level.levelName,
+                    level.levelBpm,
+                    level.isPlayable,
+                    level.generalEstimation,
+                    level.notesTotal,
+                    level.notesRegistered,
+                    level.pressRecord,
+                    level.backgroundPath,
+                    level.trackPath);
                 newLevelTemplate.transform.SetParent(dataContainer.transform, false);
             }
         }
     }
 
+
+    public void DeselectAll()
+    {
+        foreach (LevelDataDisplay child in dataContainer.GetComponentsInChildren<LevelDataDisplay>())
+        {
+            child.RevertColor();
+        }
+    }
+
+    public void SetLevelCompletionInfo(float estimation,
+                                                            int notesTotal,
+                                                            int notesRegistered,
+                                                            System.Collections.Generic.List<int> pressRecord,
+                                                            string bgPath)
+    {
+        if (estimation > 8)
+        {
+            summaryScore.SetText("S");
+        }
+        else if (estimation > 6 && estimation < 8)
+        {
+            summaryScore.SetText("A");
+        }
+        else if (estimation > 4 && estimation < 6)
+        {
+            summaryScore.SetText("B");
+        }
+        else if (estimation > 2 && estimation < 4)
+        {
+            summaryScore.SetText("C");
+        }
+        else if (estimation > 0 && estimation < 2)
+        { 
+            summaryScore.SetText("D");
+        }
+        totalNotes.text = notesTotal.ToString();
+        pressedNotes.text = notesRegistered.ToString();
+
+        perfect.text = pressRecord[1].ToString();
+        got.text = pressRecord[0].ToString();
+        meh.text = pressRecord[2].ToString();
+        missed.text = pressRecord[3].ToString();
+        ChangeBGTo(bgPath);
+    }
+    public void SetMinimalCompletionInfo(string bgPath, int notesTotal)
+    {
+        summaryScore.text = "?";
+        pressedNotes.text = "?";
+        perfect.text = "?";
+        got.text = "?";
+        meh.text = "?";
+        missed.text = "?";
+
+        totalNotes.text = notesTotal.ToString();
+
+        ChangeBGTo(bgPath);
+    }
+
+    public void ResetCompletionInfo()
+    {
+        summaryScore.text = "?";
+        pressedNotes.text = "?";
+        perfect.text = "?";
+        got.text = "?";
+        meh.text = "?";
+        missed.text = "?";
+        totalNotes.text = "?";
+
+        DOTween.Kill(tween);
+        tween = appBg.DOColor(new Color(195, 195, 195, 0), 2f);
+    }
+
+    private void ChangeBGTo(string bgPath)
+    {
+        DOTween.Kill(tween);
+        if (bgPath == null || bgPath.Length < 1)
+        {
+            tween = appBg.DOColor(new Color(0.8f, 0.8f, 0.8f, 0), 1f);
+        }
+        else
+        {
+            if (appBg.color.a == 0)
+            {
+                tween = appBg.DOColor(new Color(0.8f, 0.8f, 0.8f, 0), 1f);
+            }
+            appBg.DOColor(new Color(0.6f, 0.6f, 0.6f, 0.7f), 1f);
+            appBg.sprite = SaveLoadInfo.LoadImageFromPath(bgPath);
+        }
+    }
+
     private void OpenCloseNewLevelTab()
     {
-        newLevelScreenAnimator.SetBool("idle", !newLevelScreenAnimator.GetBool("idle"));
+        DOTween.Kill(panelTween);
+        if (!isPanelOpened)
+        {
+            panelTween = newLevelPanel.GetComponent<RectTransform>().DOAnchorPosY(150, 1f);
+        }
+        else
+        {
+            panelTween = newLevelPanel.GetComponent<RectTransform>().DOAnchorPosY(-150, 1f);
+        }
+        isPanelOpened = !isPanelOpened;
     }
 
-    private void ShowNameError()
+    private IEnumerator ShowNameError()
     {
-        newLevelScreenAnimator.SetBool("nameError", true);
+        errorTween = errorAnnouncement.GetComponent<RectTransform>().DOAnchorPosY(20, 1f);
+        yield return errorTween.WaitForCompletion();
+        yield return new WaitForSeconds(1.5f);
+        errorTween = errorAnnouncement.GetComponent<RectTransform>().DOAnchorPosY(-25, 1f);
+    }
+
+    private void ConfirmButtonAction(bool toShow)
+    {
+        confirmNewLevel.interactable = toShow;
+        if (toShow)
+        {
+            confirmNewLevel.GetComponent<RectTransform>().DOAnchorPosY(25, 1f);
+        }
+        else
+        {
+            confirmNewLevel.GetComponent<RectTransform>().DOAnchorPosY(-25, 1f);
+        }
+    }
+
+    public void SetSelectedLevelTrack(string path, string name)
+    {
+        FindFirstObjectByType<MusicPlayer>().SetNewTrack(path, name);
     }
 }
-
-//Потестить, что будет, если папки с уровнями не существует на момент
-//загрузки списка уровней
-//Потестить, что будет если название папки уровня отличается от названия уровня в файле

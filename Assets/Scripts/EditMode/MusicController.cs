@@ -30,16 +30,23 @@ public class MusicController : MonoBehaviour
     private EditModeController editModeController;
     private EditorUIController editorUIController;
     public AudioImporter importer;
+
+    void OnApplicationQuit()
+    {
+        PlayerPrefs.DeleteKey("NotFirstLoad");
+        PlayerPrefs.DeleteKey("CurrentLevelName");
+    }
     private void OnLoaded(AudioClip audioClip)
     {
         musicPlayer.clip = audioClip;
         // Костыль, убрать по возможности
         musicPlayer.Play();
         musicPlayer.Pause();
-    
+
         editorUIController.InitiateUI(levelInfo.waveformPath, levelInfo.backgroundPath, levelInfo.levelName, levelInfo.notesTotal);
         secPerBeat = 60f / levelInfo.levelBpm;
         beatPerSec = levelInfo.levelBpm / 60f;
+        editModeController.SetLevelBPM(levelInfo.levelBpm);
     }
 
     void Start()
@@ -172,6 +179,7 @@ public class MusicController : MonoBehaviour
                 {
                     nextIndex = notesInfo.noteBeat.Count;
                 }
+                dspSongTime = (float)AudioSettings.dspTime - songPosition;
             }
         }
         else

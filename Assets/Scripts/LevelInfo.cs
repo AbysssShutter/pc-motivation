@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 [Serializable]
 public class LevelInfo
@@ -10,29 +11,32 @@ public class LevelInfo
     public string waveformPath;
     public string backgroundPath = null;
     public bool isPlayable = false;
-    public int summary;
+    public float summary;
+    public float generalEstimation;
     public int notesTotal;
     public int notesRegistered;
-    public List<int> pressRecord;
+    public List<int> pressRecord = null;
 
-    public void CalculateAndSaveScore(int currentNotesRegistered, List<int> currentPressRecord)
+    public string CalculateAndSaveScore(int currentNotesRegistered, List<int> currentPressRecord)
     {
-        int currentSummary = (int)Math.Round(currentPressRecord[0] * -0.5f +
-            currentPressRecord[1] * 2 +
-            currentPressRecord[2] * 0.5f +
-            currentPressRecord[3] * -1);
+        float currentSummary = currentPressRecord[0] * 0.5f +
+            currentPressRecord[1] * 1 +
+            currentPressRecord[2] * -0.5f +
+            currentPressRecord[3] * -1;
+        float currentEstim = 0;
+        if (currentSummary / currentNotesRegistered > 0)
+        {
+            currentEstim = currentSummary / currentNotesRegistered * 10;
+        }
 
-        if (pressRecord.Count < 1)
+        if (((pressRecord == null || pressRecord.Count < 1) && currentSummary / currentNotesRegistered > 0)
+            || currentSummary > summary && currentNotesRegistered >= notesRegistered)
         {
+            generalEstimation = currentEstim;
             summary = currentSummary;
             pressRecord = currentPressRecord;
             notesRegistered = currentNotesRegistered;
         }
-        else if (currentSummary > summary && currentNotesRegistered > notesRegistered)
-        {
-            summary = currentSummary;
-            pressRecord = currentPressRecord;
-            notesRegistered = currentNotesRegistered;
-        }
+        return "currentSumm:" + currentSummary + "befSum:" + summary; 
     }
 }

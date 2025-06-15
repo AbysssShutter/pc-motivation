@@ -4,10 +4,14 @@ using UnityEngine;
 public class EditModeController : MonoBehaviour
 {
     private const float NOTEANIMDURATION = 1.5f;
-    [SerializeField] private Canvas levelCanvas;
+    private float BPM;
+    [SerializeField] private GameObject elemsContainer;
+    [SerializeField] private Camera worldCamera;
     [SerializeField] private GameObject buttonSpawnField;
     // Префабы нот
     [SerializeField] private GameObject basicNotePrefab;
+    [SerializeField] private GameObject triolNotePrefab;
+    [SerializeField] private GameObject duolNotePrefab;
     MusicController musicController;
     
 
@@ -15,14 +19,18 @@ public class EditModeController : MonoBehaviour
     {
         musicController = FindFirstObjectByType<MusicController>();
     }
+    public void SetLevelBPM(float bpm)
+    {
+        BPM = bpm;
+    }
 
     public void CreateNewNoteOnCursor(string type, bool meshMouseSetup, Vector2 currMousePos = default(Vector2))
     {
         if (!meshMouseSetup)
         {
             currMousePos = Input.mousePosition;
-            RectTransform canvasTransform = levelCanvas.transform.GetComponent<RectTransform>();
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasTransform, currMousePos, levelCanvas.worldCamera, out currMousePos);
+            RectTransform canvasTransform = elemsContainer.transform.GetComponent<RectTransform>();
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasTransform, currMousePos, worldCamera, out currMousePos);
 
             if (currMousePos[0] < -840 || currMousePos[0] > 840
                 || currMousePos[1] < -420 || currMousePos[1] > 420)
@@ -40,6 +48,7 @@ public class EditModeController : MonoBehaviour
     private void SpawnNoteInEditMode(bool isANewNote, Vector2 spawnPos, string type, int index = 0, float offsetPercent = 0.0f, float fadeTime = 3f)
     {
         GameObject newNote = Instantiate(GetObjectByType(type), spawnPos, Quaternion.identity);
+        newNote.GetComponent<BasicNoteScript>().SetBPM(BPM);
         newNote.GetComponent<BasicNoteScript>().SetEditModeTo(true);
         newNote.GetComponent<BasicNoteScript>().SetNoteIndex(index);
         newNote.GetComponent<BasicNoteScript>().SetFadeTimeForPlayMode(NOTEANIMDURATION / fadeTime);
@@ -63,8 +72,9 @@ public class EditModeController : MonoBehaviour
     public void SpawnNoteInPlayMode(Vector2 spawnPos, string type, float fadeTime) {
         GameObject newNote = Instantiate(GetObjectByType(type), spawnPos, Quaternion.identity);
         newNote.GetComponent<BasicNoteScript>().SetFadeTimeForPlayMode(NOTEANIMDURATION / fadeTime);
+        newNote.GetComponent<BasicNoteScript>().SetBPM(BPM);
         newNote.GetComponent<BasicNoteScript>().RotateSelf();
-        newNote.transform.SetParent(levelCanvas.transform, false);   
+        newNote.transform.SetParent(elemsContainer.transform, false);   
     }
 
     public void RefreshNotesOnTimingUpdate(List<float> beatsAhead = null, List<int> indexes = null) {
@@ -88,9 +98,14 @@ public class EditModeController : MonoBehaviour
     }
 
     private GameObject GetObjectByType(string type) {
-        switch(type) {
+        switch (type)
+        {
             case "BASIC":
                 return basicNotePrefab;
+            case "TRIOL":
+                return triolNotePrefab;
+            case "DUOL":
+                return duolNotePrefab;
         }
         return null;
     }

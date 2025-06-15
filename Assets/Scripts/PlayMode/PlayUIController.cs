@@ -4,7 +4,6 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using DG.Tweening;
 using System.Collections;
-using Unity.VisualScripting;
 
 public class PlayUIController : MonoBehaviour
 {
@@ -20,6 +19,10 @@ public class PlayUIController : MonoBehaviour
     [SerializeField] private GameObject countdownScreen;
     [SerializeField] private TMP_Text countdownText;
     [SerializeField] private Image countdownBack;
+
+    [SerializeField] private Button skipButton;
+    [SerializeField] private Slider levelProgression;
+
     private int countdown = 3;
 
     private PlayMusicController playMusicController;
@@ -28,6 +31,7 @@ public class PlayUIController : MonoBehaviour
     {
         playMusicController = FindFirstObjectByType<PlayMusicController>();
         levelNameShow.text = levelName;
+        levelProgression.maxValue = playMusicController.GetSafeTrackLength();
         Cursor.SetCursor(defaultCursor, Vector2.zero, CursorMode.Auto);
 
         if (backgroundPath != null)
@@ -40,13 +44,14 @@ public class PlayUIController : MonoBehaviour
     public void BackToMainScreen()
     {
         playMusicController.SaveCompletionInfo();
+        DOTween.Clear();
         SceneManager.LoadScene("MenuScene");
     }
 
     private void SetUpBackground(string path)
     {
         levelBackground.sprite = SaveLoadInfo.LoadImageFromPath(path);
-        levelBackground.color = new Color(140.0f, 140.0f, 140.0f);
+        levelBackground.color = new Color(0.6f, 0.6f, 0.6f, 0.7f);
     }
 
     public IEnumerator LoadingScreen(string status)
@@ -89,6 +94,7 @@ public class PlayUIController : MonoBehaviour
             {
                 countdownScreen.SetActive(false);
                 countdown = 3;
+                DOTween.Clear();
             });
             playMusicController.StartOrPausePlayMode();
         }
@@ -108,5 +114,16 @@ public class PlayUIController : MonoBehaviour
             pauseMenu.SetActive(false);
             StartCoroutine(CountdownToGameUnpause());
         }
+    }
+
+    public void UnlockSkipButton()
+    {
+        skipButton.interactable = true;
+        skipButton.GetComponent<Image>().DOFade(0.5f, 1f);
+    }
+
+    public void RefreshSliderPositionInPlayMode(float timing)
+    {
+        levelProgression.SetValueWithoutNotify(timing);
     }
 }

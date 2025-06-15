@@ -14,6 +14,20 @@ AudioMixerEffectController:
   m_SendTarget: {fileID: 0}
   m_EnableWetMix: 0
   m_Bypass: 0
+--- !u!244 &-4635132327684091357
+AudioMixerEffectController:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_EffectID: d008c741dc2d18e45bc5b2ec2e3f02ad
+  m_EffectName: Attenuation
+  m_MixLevel: ee6426d62276d29479042f4babf1e0b4
+  m_Parameters: []
+  m_SendTarget: {fileID: 0}
+  m_EnableWetMix: 0
+  m_Bypass: 0
 --- !u!241 &24100000
 AudioMixerController:
   m_ObjectHideFlags: 0
@@ -30,13 +44,20 @@ AudioMixerController:
   m_EnableSuspend: 1
   m_UpdateMode: 0
   m_ExposedParameters:
+  - guid: f96d16ad8b6dfdb49be7558af4304ca7
+    name: MusicVolume
+  - guid: 14f50f05cc005e740b74f30ee73db6c7
+    name: GeneralVolume
   - guid: 8d645ceca2a0caa458bee8f4521a0868
     name: MusicPlayerVolume
+  - guid: cf533bd4940a9034aa58b4d08f5d61d0
+    name: EffectsVolume
   m_AudioMixerGroupViews:
   - guids:
     - 516ca08871748ad40837726f70b33dc0
     - 9600185a07f247241a6334516c018dd7
     - 84dc96a8e6095ac46a05b9faa5fa0f87
+    - 3d9217439f7251342ac83e7fd6a570a1
     name: View
   m_CurrentViewIndex: 0
   m_TargetSnapshot: {fileID: 24500006}
@@ -52,6 +73,7 @@ AudioMixerGroupController:
   m_Children:
   - {fileID: 3199917699271037725}
   - {fileID: 4624018503907383392}
+  - {fileID: 5421988798209632474}
   m_Volume: 14f50f05cc005e740b74f30ee73db6c7
   m_Pitch: 55d9d5f6eb5807149911a068bad4b129
   m_Send: 00000000000000000000000000000000
@@ -85,7 +107,8 @@ AudioMixerSnapshotController:
   m_AudioMixer: {fileID: 24100000}
   m_SnapshotID: ab6d4ab168a250d45936cce6f98c93b0
   m_FloatValues:
-    14f50f05cc005e740b74f30ee73db6c7: 0.041713238
+    14f50f05cc005e740b74f30ee73db6c7: 0
+    8d645ceca2a0caa458bee8f4521a0868: -13.0627575
   m_TransitionOverrides: {}
 --- !u!244 &958056803405789810
 AudioMixerEffectController:
@@ -135,6 +158,25 @@ AudioMixerGroupController:
   m_Send: 00000000000000000000000000000000
   m_Effects:
   - {fileID: 958056803405789810}
+  m_UserColorIndex: 0
+  m_Mute: 0
+  m_Solo: 0
+  m_BypassEffects: 0
+--- !u!243 &5421988798209632474
+AudioMixerGroupController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: GeneralMusic
+  m_AudioMixer: {fileID: 24100000}
+  m_GroupID: 3d9217439f7251342ac83e7fd6a570a1
+  m_Children: []
+  m_Volume: f96d16ad8b6dfdb49be7558af4304ca7
+  m_Pitch: 7cf1ed3455a5bac429b5417852e932ec
+  m_Send: 00000000000000000000000000000000
+  m_Effects:
+  - {fileID: -4635132327684091357}
   m_UserColorIndex: 0
   m_Mute: 0
   m_Solo: 0

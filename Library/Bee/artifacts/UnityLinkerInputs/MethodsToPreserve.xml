@@ -5,12 +5,17 @@
 			<method name="NoteHit"/>
 			<method name="NoteHit"/>
 		</type>
+		<type fullname="DuolNoteScript">
+			<method name="NoteHit"/>
+			<method name="NoteHit"/>
+			<method name="NoteHit"/>
+		</type>
 		<type fullname="EditorUIController">
 			<method name="BackToMainScreen"/>
-			<method name="EnableDisableAddMenu"/>
 			<method name="EnableDisableBorders"/>
 			<method name="EnableDisableMesh"/>
 			<method name="LevelNameUpdated"/>
+			<method name="OpenCloseAdditionalMenu"/>
 			<method name="OpenClosePauseMenu"/>
 			<method name="OpenClosePauseMenu"/>
 			<method name="SelectLevelBackground"/>
@@ -35,13 +40,19 @@
 			<method name="StartOrPausePlayMode"/>
 		</type>
 		<type fullname="MusicPlayer">
+			<method name="ClosePlaylist"/>
+			<method name="ClosePlaylist"/>
+			<method name="ClosePlaylist"/>
+			<method name="ClosePlaylist"/>
 			<method name="OpenClosePlaylist"/>
 			<method name="PlayPauseTrack"/>
+			<method name="SetFirstTrackOfListAndReset"/>
 			<method name="SetMusicVolume"/>
 			<method name="SetNextTrack"/>
 			<method name="SetPrevTrack"/>
 		</type>
 		<type fullname="PlayUIController">
+			<method name="BackToMainScreen"/>
 			<method name="BackToMainScreen"/>
 			<method name="OpenClosePauseMenu"/>
 			<method name="OpenClosePauseMenu"/>
@@ -50,11 +61,19 @@
 			<method name="DragSlider"/>
 		</type>
 		<type fullname="SettingsScreen">
+			<method name="Close"/>
+			<method name="Close"/>
+			<method name="Close"/>
 			<method name="ShowOrClose"/>
 		</type>
 		<type fullname="TrackScript">
 			<method name="SetTrackAsPlaying"/>
 			<method name="SetTrackAsPlaying"/>
+		</type>
+		<type fullname="TriolNoteScript">
+			<method name="NoteHit"/>
+			<method name="NoteHit"/>
+			<method name="NoteHit"/>
 		</type>
 	</assembly>
 	<assembly fullname="Unity.RenderPipelines.Core.Runtime" ignoreIfMissing="1">
@@ -100,6 +119,24 @@
 			<method name="SetActive"/>
 			<method name="SetActive"/>
 			<method name="SetActive"/>
+			<method name="SetActive"/>
+			<method name="SetActive"/>
+			<method name="SetActive"/>
+			<method name="SetActive"/>
+			<method name="SetActive"/>
+			<method name="SetActive"/>
+			<method name="SetActive"/>
+			<method name="SetActive"/>
+			<method name="SetActive"/>
+			<method name="SetActive"/>
+			<method name="SetActive"/>
+			<method name="SetActive"/>
+		</type>
+	</assembly>
+	<assembly fullname="UnityEngine.UI" ignoreIfMissing="1">
+		<type fullname="UnityEngine.UI.Selectable">
+			<method name="set_interactable"/>
+			<method name="set_interactable"/>
 		</type>
 	</assembly>
 </linker>

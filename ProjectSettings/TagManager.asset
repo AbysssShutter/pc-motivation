@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Note
   - MeshLine
+  - NoteLine
   layers:
   - Default
   - TransparentFX

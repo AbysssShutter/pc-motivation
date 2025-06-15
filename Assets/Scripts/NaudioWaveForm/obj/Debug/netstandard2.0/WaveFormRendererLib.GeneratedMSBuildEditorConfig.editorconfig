@@ -1,0 +1,3 @@
+is_global = true
+build_property.RootNamespace = NAudio.WaveFormRenderer
+build_property.ProjectDir = C:\Users\Тимофей\uso\Assets\Scripts\NaudioWaveForm\

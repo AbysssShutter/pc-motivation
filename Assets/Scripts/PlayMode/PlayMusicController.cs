@@ -42,6 +42,13 @@ public class PlayMusicController : MonoBehaviour
     private PlayModeController playModeController;
     private PlayUIController playUIController;
     public AudioImporter importer;
+    private float step = 0f;
+    
+    void OnApplicationQuit()
+    {
+        PlayerPrefs.DeleteKey("NotFirstLoad");
+        PlayerPrefs.DeleteKey("CurrentLevelName");
+    }
     private void OnLoaded(AudioClip audioClip)
     {
         musicPlayer.clip = audioClip;
@@ -53,6 +60,7 @@ public class PlayMusicController : MonoBehaviour
         beatPerSec = levelInfo.levelBpm / 60f;
 
         playUIController.InitiateUI(levelInfo.backgroundPath, levelInfo.levelName);
+        playModeController.SetLevelBPM(levelInfo.levelBpm);
         StartCoroutine(playUIController.CountdownToGameUnpause());
     }
 
@@ -72,12 +80,32 @@ public class PlayMusicController : MonoBehaviour
             songPosition = (float)(AudioSettings.dspTime - dspSongTime - firstBeatOffset);
             //determine how many beats since the song started
             songPositionInBeats = songPosition / secPerBeat;
-            if (nextIndex <= notesInfo.noteBeat.Count - 1 && (notesInfo.noteBeat[nextIndex] - (notesInfo.noteFadeTime[nextIndex] * beatPerSec)) < songPositionInBeats)
+            if (nextIndex <= notesInfo.noteBeat.Count - 1 && notesInfo.noteBeat[nextIndex] - (notesInfo.noteFadeTime[nextIndex] * beatPerSec) < songPositionInBeats)
             {
                 playModeController.SpawnNoteInPlayMode(notesInfo.notePos[nextIndex].GetVector(), notesInfo.noteType[nextIndex], notesInfo.noteFadeTime[nextIndex]);
+                if (nextIndex + 1 != notesInfo.noteBeat.Count)
+                {
+                    step = (notesInfo.noteBeat[nextIndex + 1] + (notesInfo.noteFadeTime[nextIndex + 1] - 0.5f) * beatPerSec
+                            - notesInfo.noteBeat[nextIndex]
+                            ) * secPerBeat;
+
+                    if (step < 7 && step > 0)
+                    {
+                        playModeController.DrawLineFromOneNoteToOther(notesInfo.notePos[nextIndex], notesInfo.notePos[nextIndex + 1], step);
+                    }
+                }
                 nextIndex++;
             }
+            else if (nextIndex >= notesInfo.noteBeat.Count && musicPlayer.clip.length - songPosition > 10f)
+            {
+                playUIController.UnlockSkipButton();
+            }
+            else if (musicPlayer.clip.length - songPosition <= 1f)
+            {
+                playUIController.BackToMainScreen();
+            }
         }
+        playUIController.RefreshSliderPositionInPlayMode(songPosition);
     }
 
     public void StartOrPausePlayMode()
@@ -87,29 +115,18 @@ public class PlayMusicController : MonoBehaviour
         {
             musicPlayer.UnPause();
 
-            nextIndex = 0;
             GameObject[] notesOnScreen = GameObject.FindGameObjectsWithTag("Note");
             foreach (GameObject note in notesOnScreen)
             {
                 note.GetComponent<BasicNoteScript>().ResumeNoteForEditMode();
-                nextIndex++;
+            }
+            GameObject[] linesOnScreen = GameObject.FindGameObjectsWithTag("NoteLine");
+            foreach (GameObject line in linesOnScreen)
+            {
+                line.GetComponent<LineDrawer>().isPaused = false;
             }
 
-            if (songPosition == 0f)
-            {
-                dspSongTime = (float)AudioSettings.dspTime;
-            }
-            else if (songPosition != 0f)
-            {
-                if (notesInfo.noteBeat.FindIndex(note => note > songPositionInBeats) != -1)
-                {
-                    nextIndex += notesInfo.noteBeat.FindIndex(note => note > songPositionInBeats);
-                }
-                else
-                {
-                    nextIndex = notesInfo.noteBeat.Count;
-                }
-            }
+            dspSongTime = (float)AudioSettings.dspTime - songPosition;
         }
         else
         {
@@ -119,6 +136,12 @@ public class PlayMusicController : MonoBehaviour
             {
                 note.GetComponent<BasicNoteScript>().PauseNoteForEditMode();
             }
+            GameObject[] linesOnScreen = GameObject.FindGameObjectsWithTag("NoteLine");
+            foreach (GameObject line in linesOnScreen)
+            {
+                line.GetComponent<LineDrawer>().isPaused = true;
+            }
+
         }
     }
 
@@ -154,20 +177,25 @@ public class PlayMusicController : MonoBehaviour
     {
         switch (clipName)
         {
-            case "NoteAppears":
+            case "Got it!":
                 pressRecord[0] += 1;
                 break;
-            case "NoteTrueIdle":
+            case "Perfect!":
                 pressRecord[1] += 1;
                 break;
-            case "NoteCrack":
+            case "Meh":
                 pressRecord[2] += 1;
                 break;
-            case "NoteLost":
+            case "Missed":
                 pressRecord[3] += 1;
                 break;
         }
         notesRegistered += 1;
+    }
+
+    public float GetSafeTrackLength()
+    {
+        return musicPlayer.clip.length - 0.1f;
     }
 }
 

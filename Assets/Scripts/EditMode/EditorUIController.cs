@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using AnotherFileBrowser.Windows;
+using DG.Tweening;
 
 public class EditorUIController : MonoBehaviour
 {
@@ -17,10 +18,12 @@ public class EditorUIController : MonoBehaviour
     [SerializeField] private TMP_InputField levelNameEditor;
     [SerializeField] private TMP_Text notesAmount;
     //Спрайты курсора
-    [SerializeField] private Texture2D newNoteCursor;
+    [SerializeField] private Texture2D basicNoteCursor;
+    [SerializeField] private Texture2D triolCursor;
+    [SerializeField] private Texture2D duolCursor;
     [SerializeField] private Texture2D defaultCursor;
-    [SerializeField] private Image levelBackground;
 
+    [SerializeField] private Image levelBackground;
     [SerializeField] private Slider trackSlider;
     [SerializeField] private Image sliderBackground;
     //Блок элементов интерфейса управления данными о ноте
@@ -28,6 +31,8 @@ public class EditorUIController : MonoBehaviour
     [SerializeField] private Slider fadeTimeSlider;
     [SerializeField] private Button deleteNoteButton;
     [SerializeField] private TextMeshProUGUI fadeTimeText;
+    private bool addMenuOpened = false;
+    private Tween addMenuTween;
 
 
     public void InitiateUI(string waveformPath, string backgroundPath, string levelName, int notesTotalAmount)
@@ -75,20 +80,32 @@ public class EditorUIController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.A))
         {
             ChangeCurrentNote("BASIC");
-        } 
+        }
+        else if (Input.GetKeyDown(KeyCode.S))
+        {
+            ChangeCurrentNote("TRIOL");
+        }
+        else if (Input.GetKeyDown(KeyCode.D))
+        {
+            ChangeCurrentNote("DUOL");
+        }
     }
 
     public void ChangeCurrentNote(string noteName)
     {
+        userSelectedNoteType = noteName;
         switch (noteName)
         {
             case "BASIC":
-                userSelectedNoteType = "BASIC";
+                Cursor.SetCursor(basicNoteCursor, Vector2.zero, CursorMode.Auto);
                 break;
-                // Добавить вариации курсора для каждого вида нот
-                // При добавлении новых нот обновить метод
+            case "TRIOL":
+                Cursor.SetCursor(triolCursor, Vector2.zero, CursorMode.Auto);
+                break;
+            case "DUOL":
+                Cursor.SetCursor(duolCursor, Vector2.zero, CursorMode.Auto);
+                break;
         }
-        //Cursor.SetCursor(newNoteCursor, Vector2.zero, CursorMode.Auto);
     }
 
     public void UserNoteDataControl(int index, float fadeTime, GameObject note)
@@ -166,11 +183,6 @@ public class EditorUIController : MonoBehaviour
         mesh.SetActive(state);
     }
 
-    public void EnableDisableAddMenu()
-    {
-        addMenu.SetActive(!addMenu.activeSelf);
-    }
-
     public void MeshTriggered(Vector2 meshPos)
     {
         if (userSelectedNoteType != null)
@@ -204,5 +216,19 @@ public class EditorUIController : MonoBehaviour
             //анимация
             pauseMenu.SetActive(false);
         }
+    }
+
+    public void OpenCloseAdditionalMenu()
+    {
+        DOTween.Kill(addMenuTween);
+        if (!addMenuOpened)
+        {
+            addMenuTween = addMenu.GetComponent<RectTransform>().DOAnchorPosY(200, 1f);
+        }
+        else
+        {
+            addMenuTween = addMenu.GetComponent<RectTransform>().DOAnchorPosY(-200, 1f);
+        }
+        addMenuOpened = !addMenuOpened;
     }
 }
